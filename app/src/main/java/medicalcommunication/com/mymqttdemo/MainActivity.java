@@ -13,7 +13,8 @@ import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 public class MainActivity extends AppCompatActivity {
 
     public String HOST = "tcp://106.12.24.200";//服务器地址（协议+地址+端口号）胡云飞本地
-    public int PORT = 1883;//服务器地址（协议+地址+端口号）胡云飞本地
+    //public String HOST = "tcp://101.132.133.252";//服务器地址（协议+地址+端口号）测试
+    public int PORT = 1883;
     private Connection connection;
     public String USERNAME = "admin";//用户名
     public String PASSWORD = "admin";//密码
@@ -107,6 +108,17 @@ public class MainActivity extends AppCompatActivity {
         }
         catch (MqttException e) {
             Log.e(this.getClass().getCanonicalName(), "Failed to publish a messged from the client with the handle " + clientHandle, e);
+        }
+    }
+
+    public void subscribe(View view) {
+        String[] topics = new String[1];
+        topics[0] = PUBLISH_TOPIC;
+        try {
+            Connections.getInstance(this).getConnection(clientHandle).getClient()
+                    .subscribe(PUBLISH_TOPIC, 1, null, new ActionListener(this, ActionListener.Action.SUBSCRIBE, clientHandle, topics));
+        } catch (MqttException e) {
+            e.printStackTrace();
         }
     }
 }

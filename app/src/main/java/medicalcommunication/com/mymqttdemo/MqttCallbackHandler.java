@@ -12,8 +12,10 @@
  */
 package medicalcommunication.com.mymqttdemo;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -21,20 +23,24 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 /**
  * Handles call backs from the MQTT Client
- *
  */
 public class MqttCallbackHandler implements MqttCallback {
 
-  /** {@link Context} for the application used to format and import external strings**/
+  /**
+     * {@link Context} for the application used to format and import external strings
+     **/
   private Context context;
-  /** Client handle to reference the connection that this handler is attached to**/
+  /**
+     * Client handle to reference the connection that this handler is attached to
+     **/
   private String clientHandle;
 
   /**
-   * Creates an <code>MqttCallbackHandler</code> object
-   * @param context The application's context
-   * @param clientHandle The handle to a {@link Connection} object
-   */
+     * Creates an <code>MqttCallbackHandler</code> object
+     *
+     * @param context      The application's context
+     * @param clientHandle The handle to a {@link Connection} object
+     */
   public MqttCallbackHandler(Context context, String clientHandle)
   {
     this.context = context;
@@ -42,8 +48,8 @@ public class MqttCallbackHandler implements MqttCallback {
   }
 
   /**
-   * @see MqttCallback#connectionLost(java.lang.Throwable)
-   */
+     * @see MqttCallback#connectionLost(java.lang.Throwable)
+     */
   @Override
   public void connectionLost(Throwable cause) {
 //	  cause.printStackTrace();
@@ -70,21 +76,21 @@ public class MqttCallbackHandler implements MqttCallback {
   }
 
   /**
-   * @see MqttCallback#messageArrived(java.lang.String, MqttMessage)
-   */
+     * @see MqttCallback#messageArrived(java.lang.String, MqttMessage)
+     */
   @Override
   public void messageArrived(String topic, MqttMessage message) throws Exception {
 
     //Get connection object associated with this object
     Connection c = Connections.getInstance(context).getConnection(clientHandle);
-
+    Log.e("messageArrived","收到消息"+message.getPayload().toString());
     //create arguments to format message arrived notifcation string
     String[] args = new String[2];
     args[0] = new String(message.getPayload());
     args[1] = topic+";qos:"+message.getQos()+";retained:"+message.isRetained();
 
     //get the string from strings.xml and format
-    String messageString = context.getString(R.string.messageRecieved, (Object[]) args);
+    @SuppressLint("StringFormatMatches") String messageString = context.getString(R.string.messageRecieved, (Object[]) args);
 
     //create intent to start activity
     Intent intent = new Intent();
@@ -106,8 +112,8 @@ public class MqttCallbackHandler implements MqttCallback {
   }
 
   /**
-   * @see MqttCallback#deliveryComplete(IMqttDeliveryToken)
-   */
+     * @see MqttCallback#deliveryComplete(IMqttDeliveryToken)
+     */
   @Override
   public void deliveryComplete(IMqttDeliveryToken token) {
     // Do nothing

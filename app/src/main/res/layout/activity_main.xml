@@ -18,5 +18,11 @@
         android:layout_height="wrap_content"
         android:onClick="send"
         android:text="send"/>
+    <Button
+        android:id="@+id/subscribe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="subscribe"
+        android:text="subscribe"/>
 
 </LinearLayout>
