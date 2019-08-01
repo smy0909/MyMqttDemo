@@ -83,7 +83,7 @@ public class MqttCallbackHandler implements MqttCallback {
 
     //Get connection object associated with this object
     Connection c = Connections.getInstance(context).getConnection(clientHandle);
-    Log.e("messageArrived","收到消息"+message.getPayload().toString());
+
     //create arguments to format message arrived notifcation string
     String[] args = new String[2];
     args[0] = new String(message.getPayload());
@@ -102,12 +102,12 @@ public class MqttCallbackHandler implements MqttCallback {
     notifyArgs[0] = c.getId();
     notifyArgs[1] = new String(message.getPayload());
     notifyArgs[2] = topic;
-
+    Log.e("messageArrived","收到消息"+notifyArgs[1]);
     //notify the user
-    Notify.notifcation(context, context.getString(R.string.notification, notifyArgs), intent, R.string.notifyTitle);
+//    Notify.notifcation(context, context.getString(R.string.notification, notifyArgs), intent, R.string.notifyTitle);
 
     //update client history
-    c.addAction(messageString);
+//    c.addAction(messageString);
 
   }
 

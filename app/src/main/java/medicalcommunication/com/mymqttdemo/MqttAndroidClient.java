@@ -92,6 +92,11 @@ public class MqttAndroidClient extends BroadcastReceiver implements
 	private static final int BIND_SERVICE_FLAG = 0;
 
 	private static ExecutorService pool = Executors.newCachedThreadPool();
+	MqttConnectListener mqttConnectListener;
+
+	public void setMqttConnectListener(MqttConnectListener mqttConnectListener){
+		this.mqttConnectListener=mqttConnectListener;
+	}
 
 	/**
 	 * ServiceConnection to process when we bind to our service
@@ -1355,6 +1360,7 @@ public class MqttAndroidClient extends BroadcastReceiver implements
 		}
 	}
 
+
 	/**
 	 * Common processing for many notifications
 	 *
@@ -1368,13 +1374,19 @@ public class MqttAndroidClient extends BroadcastReceiver implements
 			Status status = (Status) data
 					.getSerializable(MqttServiceConstants.CALLBACK_STATUS);
 			if (status == Status.OK) {
+				if (mqttConnectListener!=null)
+					mqttConnectListener.onSuccess();
 				((MqttTokenAndroid) token).notifyComplete();
 			}
 			else {
+				if (mqttConnectListener!=null)
+					mqttConnectListener.onFailure();
 				Exception exceptionThrown = (Exception) data.getSerializable(MqttServiceConstants.CALLBACK_EXCEPTION);
 				((MqttTokenAndroid) token).notifyFailure(exceptionThrown);
 			}
 		} else {
+			if (mqttConnectListener!=null)
+				mqttConnectListener.onError("simpleAction : token is null");
 			mqttService.traceError(MqttService.TAG, "simpleAction : token is null");
 		}
 	}
